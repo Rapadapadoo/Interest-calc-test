@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Compound Interest Calculator</title>
+  <style>
+    body {
+      font-family: monospace;
+      background-color: #111;
+      color: #eee;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #00ffcc;
+    }
+
+    label, input {
+      display: block;
+      margin: 10px 0;
+      width: 100%;
+    }
+
+    input {
+      padding: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #00ffcc;
+      border: none;
+      font-weight: bold;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .output {
+      margin-top: 30px;
+      padding: 1rem;
+      background-color: #222;
+      border-left: 4px solid #00ffcc;
+    }
+
+    .output div {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Compound Interest Calculator</h1>
+
+  <label for="initialAmount">Initial One-Time Payment ($)</label>
+  <input type="number" id="initialAmount" value="10000">
+
+  <label for="monthlyPayment">Monthly Contribution ($)</label>
+  <input type="number" id="monthlyPayment" value="200">
+
+  <label for="interestRate">Annual Interest Rate (%)</label>
+  <input type="number" id="interestRate" value="5">
+
+  <label for="years">Number of Years</label>
+  <input type="number" id="years" value="10">
+
+  <button onclick="calculateInterest()">Calculate</button>
+
+  <div class="output" id="result"></div>
+
+  <script>
+    function calculateInterest() {
+      const initial = parseFloat(document.getElementById('initialAmount').value);
+      const monthly = parseFloat(document.getElementById('monthlyPayment').value);
+      const rate = parseFloat(document.getElementById('interestRate').value) / 100;
+      const years = parseInt(document.getElementById('years').value);
+      const compoundingPerYear = 12;
+
+      let total = initial;
+      const monthlyRate = rate / compoundingPerYear;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '';
+
+      for (let year = 1; year <= years; year++) {
+        for (let month = 0; month < 12; month++) {
+          total += monthly;
+          total += total * monthlyRate;
+        }
+        const yearTotal = total.toFixed(2);
+        resultDiv.innerHTML += `<div>Year ${year}: $${yearTotal}</div>`;
+      }
+    }
+  </script>
+
+</body>
+</html>
