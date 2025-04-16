@@ -5,45 +5,78 @@
   <title>Compound Interest Calculator</title>
   <style>
     body {
-      font-family: monospace;
-      background-color: #111;
-      color: #eee;
-      padding: 2rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #1c1c1e;
+      padding: 40px;
+      max-width: 600px;
+      margin: auto;
     }
 
     h1 {
-      color: #00ffcc;
+      font-weight: 600;
+      font-size: 2rem;
+      color: #000;
+      text-align: center;
+      margin-bottom: 30px;
     }
 
-    label, input {
+    label {
       display: block;
-      margin: 10px 0;
-      width: 100%;
+      margin: 12px 0 6px;
+      font-weight: 500;
     }
 
     input {
-      padding: 8px;
+      padding: 12px;
+      width: 100%;
       font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      background-color: #fff;
+      transition: 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #007aff;
+      outline: none;
     }
 
     button {
-      padding: 10px;
-      background-color: #00ffcc;
+      margin-top: 20px;
+      padding: 14px;
+      width: 100%;
+      background-color: #007aff;
+      color: white;
+      font-weight: 600;
       border: none;
-      font-weight: bold;
-      margin-top: 10px;
+      border-radius: 14px;
+      font-size: 1rem;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #005fcc;
     }
 
     .output {
       margin-top: 30px;
-      padding: 1rem;
-      background-color: #222;
-      border-left: 4px solid #00ffcc;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     }
 
-    .output div {
+    .year-row {
       margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .summary {
+      margin-top: 24px;
+      font-size: 1.1rem;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -73,21 +106,28 @@
       const monthly = parseFloat(document.getElementById('monthlyPayment').value);
       const rate = parseFloat(document.getElementById('interestRate').value) / 100;
       const years = parseInt(document.getElementById('years').value);
-      const compoundingPerYear = 12;
+      const compoundPerYear = 12;
 
       let total = initial;
-      const monthlyRate = rate / compoundingPerYear;
+      const monthlyRate = rate / compoundPerYear;
       const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = '';
+      resultDiv.innerHTML = '<h2>Yearly Breakdown</h2>';
 
       for (let year = 1; year <= years; year++) {
         for (let month = 0; month < 12; month++) {
           total += monthly;
           total += total * monthlyRate;
         }
-        const yearTotal = total.toFixed(2);
-        resultDiv.innerHTML += `<div>Year ${year}: $${yearTotal}</div>`;
+        resultDiv.innerHTML += `<div class="year-row">Year ${year}: $${total.toFixed(2)}</div>`;
       }
+
+      const beforeTax = total.toFixed(2);
+      const afterTax = (total * 0.75).toFixed(2);
+
+      resultDiv.innerHTML += `
+        <div class="summary">Total Before Tax: $${beforeTax}</div>
+        <div class="summary">Total After 25% Tax: $${afterTax}</div>
+      `;
     }
   </script>
 
