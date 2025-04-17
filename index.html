@@ -1,183 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Compound Interest Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goal Calculator</title>
   <style>
-    body {
-      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f9f9f9;
-      color: #1c1c1e;
-      padding: 40px;
-      max-width: 700px;
-      margin: auto;
+    * {
+      box-sizing: border-box;
     }
 
-    h1 {
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #f5f5f7;
+      color: #1d1d1f;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .calculator {
+      background: #fff;
+      max-width: 500px;
+      width: 100%;
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .calculator h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
       font-weight: 600;
-      font-size: 2rem;
       text-align: center;
-      margin-bottom: 30px;
-      color: #000;
     }
 
     label {
+      font-size: 0.95rem;
+      margin-top: 15px;
       display: block;
-      margin: 12px 0 6px;
       font-weight: 500;
     }
 
     input, select {
-      padding: 12px;
+      margin-top: 5px;
       width: 100%;
-      font-size: 1rem;
+      padding: 12px;
       border: 1px solid #ccc;
       border-radius: 12px;
-      background-color: #fff;
-      box-sizing: border-box;
+      font-size: 1rem;
+      background-color: #f9f9f9;
+      transition: border-color 0.2s;
     }
 
     input:focus, select:focus {
-      border-color: #007aff;
+      border-color: #0071e3;
       outline: none;
+      background-color: #fff;
     }
 
     button {
-      margin-top: 20px;
-      padding: 14px;
+      margin-top: 25px;
       width: 100%;
-      background-color: #007aff;
+      padding: 14px;
+      background-color: #0071e3;
       color: white;
-      font-weight: 600;
+      font-size: 1rem;
       border: none;
       border-radius: 14px;
-      font-size: 1rem;
       cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
     }
 
     button:hover {
-      background-color: #005fcc;
+      background-color: #005bb5;
     }
 
-    .output {
+    #result {
       margin-top: 30px;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 16px;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    }
-
-    .year-row, .summary {
-      margin-bottom: 10px;
       font-size: 1rem;
+      line-height: 1.6;
+      text-align: center;
     }
 
-    .summary-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-top: 20px;
-      margin-bottom: 10px;
-    }
-
-    .bar-container {
-      background: #eee;
-      height: 10px;
-      border-radius: 6px;
-      margin-top: 4px;
-      margin-bottom: 12px;
-      overflow: hidden;
-    }
-
-    .bar {
-      height: 100%;
-      background: #007aff;
+    .highlight {
+      font-weight: bold;
+      color: #0071e3;
     }
   </style>
 </head>
 <body>
+  <div class="calculator">
+    <h1>Money Goal Calculator</h1>
 
-  <h1>Compound Interest Calculator</h1>
+    <label for="target">Target Amount ($)</label>
+    <input type="number" id="target" placeholder="e.g. 10000" min="1" required />
 
-  <label for="initialAmount">Initial One-Time Payment ($)</label>
-  <input type="number" id="initialAmount" value="10000">
+    <label for="downpayment">Initial Down Payment</label>
+    <select id="downpayment">
+      <option value="0">Nothing (0%)</option>
+      <option value="0.1">A Little (10%)</option>
+      <option value="0.25">Medium (25%)</option>
+      <option value="0.5">A Lot (50%)</option>
+    </select>
 
-  <label for="monthlyPayment">Monthly Contribution ($)</label>
-  <input type="number" id="monthlyPayment" value="200">
+    <label for="monthly">Monthly Contribution ($)</label>
+    <input type="number" id="monthly" placeholder="e.g. 300" min="1" required />
 
-  <label for="interestRate">Annual Interest Rate (%)</label>
-  <input type="number" id="interestRate" value="5">
+    <button onclick="calculate()">Calculate</button>
 
-  <label for="years">Number of Years</label>
-  <input type="number" id="years" value="10">
-
-  <label for="taxRate">Tax Rate on Final Amount (%)</label>
-  <select id="taxRate">
-    <option value="0">0%</option>
-    <option value="10">10%</option>
-    <option value="15">15%</option>
-    <option value="25" selected>25%</option>
-    <option value="30">30%</option>
-  </select>
-
-  <button onclick="calculate()">Calculate</button>
-
-  <div class="output" id="result"></div>
+    <div id="result"></div>
+  </div>
 
   <script>
-    function formatMoney(amount) {
-      return '$' + Number(amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
     function calculate() {
-      const initial = parseFloat(document.getElementById('initialAmount').value);
-      const monthly = parseFloat(document.getElementById('monthlyPayment').value);
-      const rate = parseFloat(document.getElementById('interestRate').value) / 100;
-      const years = parseInt(document.getElementById('years').value);
-      const tax = parseFloat(document.getElementById('taxRate').value) / 100;
-      const compoundPerYear = 12;
+      const target = parseFloat(document.getElementById("target").value);
+      const downpaymentPercent = parseFloat(document.getElementById("downpayment").value);
+      const monthly = parseFloat(document.getElementById("monthly").value);
+      const result = document.getElementById("result");
 
-      let total = initial;
-      const monthlyRate = rate / compoundPerYear;
-      let totalContributions = initial;
-      const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = '<h2 class="summary-title">Yearly Breakdown</h2>';
-
-      let max = 0;
-      const yearlyData = [];
-
-      for (let year = 1; year <= years; year++) {
-        for (let month = 0; month < 12; month++) {
-          total += monthly;
-          totalContributions += monthly;
-          total += total * monthlyRate;
-        }
-        yearlyData.push({ year, total: total });
-        if (total > max) max = total;
+      if (!target || !monthly || target <= 0 || monthly <= 0) {
+        result.innerHTML = `<p style="color: #ff3b30;">Please enter valid numbers above.</p>`;
+        return;
       }
 
-      yearlyData.forEach(entry => {
-        const percent = (entry.total / max) * 100;
-        resultDiv.innerHTML += `
-          <div class="year-row">
-            Year ${entry.year}: ${formatMoney(entry.total)}
-            <div class="bar-container"><div class="bar" style="width:${percent}%;"></div></div>
-          </div>
-        `;
-      });
+      const downpayment = target * downpaymentPercent;
+      const remaining = target - downpayment;
+      const months = Math.ceil(remaining / monthly);
 
-      const interestEarned = total - totalContributions;
-      const afterTax = total * (1 - tax);
-
-      resultDiv.innerHTML += `
-        <div class="summary-title">Investment Summary</div>
-        <div class="summary">Total Contributions: ${formatMoney(totalContributions)}</div>
-        <div class="summary">Interest Earned: ${formatMoney(interestEarned)}</div>
-        <div class="summary">Final Total (Before Tax): ${formatMoney(total)}</div>
-        <div class="summary">Final Total (After ${tax * 100}% Tax): ${formatMoney(afterTax)}</div>
+      result.innerHTML = `
+        <p>Initial Down Payment: <span class="highlight">$${downpayment.toFixed(2)}</span></p>
+        <p>Remaining to Save: <span class="highlight">$${remaining.toFixed(2)}</span></p>
+        <p>You will reach your goal in <span class="highlight">${months} month(s)</span>.</p>
       `;
     }
   </script>
-
 </body>
 </html>
